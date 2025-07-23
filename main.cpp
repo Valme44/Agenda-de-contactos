@@ -34,6 +34,7 @@ void mostrarMenu() {
         cout << "1. Agregar contacto\n";
         cout << "2. Ver contactos\n";
         cout << "3. Buscar contacto\n";
+        cout << "4. Modificar contacto\n";
         cout << "0. Salir\n";
         cout << "Seleccione una opción: ";
         cin >> opcion;
@@ -43,6 +44,7 @@ void mostrarMenu() {
             case 1: agregarContacto(); break;
             case 2: mostrarContactos(); break;
             case 3: buscarContactoPorNombre(); break;
+            case 4: modificarContactoPorNombre(); break;
             case 0: cout << "Saliendo del programa...\n"; break;
 
             default: cout << "Opción no válida. Intente nuevamente.\n";
@@ -143,6 +145,37 @@ void buscarContactoPorNombre() {
              << c.numero  << " | "
              << c.correo  << '\n';
     }
+}
+//FUNCIÓN: modificarContactoPorNombre
+
+void modificarContactoPorNombre() {
+    cout << "\nNombre del contacto a modificar: ";
+    string nombreObjetivo;
+    getline(cin, nombreObjetivo);
+
+    int posicion = encontrarIndicePorNombre(nombreObjetivo);
+    if (posicion == -1) {
+        cout << "Contacto no encontrado.\n";
+        return;
+    }
+
+    Contacto& c = agenda[posicion];
+
+    cout << "Número actual: " << c.numero  << "\n";
+    cout << "Correo actual: " << c.correo  << "\n";
+
+    cout << "Nuevo número  (enter): ";
+    string nuevoNum; getline(cin, nuevoNum);
+
+    cout << "Nuevo correo  (enter): ";
+    string nuevoMail; getline(cin, nuevoMail);
+
+    if (!nuevoNum.empty()) c.numero = nuevoNum;
+    if (!nuevoMail.empty() && nuevoMail.find('@') != string::npos)
+        c.correo = nuevoMail;
+
+    guardarEnArchivo();
+    cout << "Contacto modificado.\n";
 }
 
     return 0;
