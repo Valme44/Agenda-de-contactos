@@ -31,6 +31,7 @@ void mostrarMenu() {
     int opcion;
     do {
         cout << "\nAGENDA DE CONTACTOS\n";
+        cout << "1. Agregar contacto\n";
         cout << "0. Salir\n";
         cout << "Seleccione una opción: ";
         cin >> opcion;
@@ -38,6 +39,7 @@ void mostrarMenu() {
 
         switch (opcion) {
             case 0: cout << "Saliendo del programa...\n"; break;
+            case 1: agregarContacto(); break;
             default: cout << "Opción no válida. Intente nuevamente.\n";
         }
     } while (opcion != 0);
@@ -45,7 +47,38 @@ void mostrarMenu() {
 
 //FUNCIÓN PRINCIPAL
 int main() {
-    mostrarMenu();         
+    mostrarMenu(); 
+//FUNCIÓN: agregarContacto
+
+void agregarContacto() {
+    Contacto nuevo;
+
+    cout << "\nAGREGAR NUEVO CONTACTO:\n";
+    cout << "Nombre: ";
+    getline(cin, nuevo.nombre);
+
+    cout << "Número: ";
+    getline(cin, nuevo.numero);
+
+    cout << "Correo: ";
+    getline(cin, nuevo.correo);
+
+    // Validaciones
+    if (nuevo.nombre.empty() || nuevo.numero.empty()) {
+        cout << "Error: nombre y número son obligatorios.\n";
+        return;
+    }
+    if (nuevo.correo.find('@') == string::npos) {
+        cout << "Error: correo inválido.\n";
+        return;
+    }
+
+    // Todo correcto → se agrega
+    agenda.push_back(nuevo);
+    guardarEnArchivo();                 
+    cout << "Contacto agregado correctamente.\n";
+}
+
     return 0;
 }
 
