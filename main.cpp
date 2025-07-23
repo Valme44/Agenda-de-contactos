@@ -35,6 +35,7 @@ void mostrarMenu() {
         cout << "2. Ver contactos\n";
         cout << "3. Buscar contacto\n";
         cout << "4. Modificar contacto\n";
+        cout << "5. Eliminar contacto\n";
         cout << "0. Salir\n";
         cout << "Seleccione una opción: ";
         cin >> opcion;
@@ -45,6 +46,7 @@ void mostrarMenu() {
             case 2: mostrarContactos(); break;
             case 3: buscarContactoPorNombre(); break;
             case 4: modificarContactoPorNombre(); break;
+            case 5: eliminarContactoPorNombre(); break;
             case 0: cout << "Saliendo del programa...\n"; break;
 
             default: cout << "Opción no válida. Intente nuevamente.\n";
@@ -54,7 +56,10 @@ void mostrarMenu() {
 
 //FUNCIÓN PRINCIPAL
 int main() {
-    mostrarMenu(); 
+    cargarDesdeArchivo();  // Se leen contactos al iniciar
+    mostrarMenu();         
+    return 0;
+
 //FUNCIÓN: agregarContacto
 
 void agregarContacto() {
@@ -176,6 +181,80 @@ void modificarContactoPorNombre() {
 
     guardarEnArchivo();
     cout << "Contacto modificado.\n";
+}
+//FUNCIÓN: eliminarContactoPorNombre
+ 
+void eliminarContactoPorNombre() {
+    cout << "\nNombre del contacto a eliminar: ";
+    string nombreObjetivo;
+    getline(cin, nombreObjetivo);
+
+    int posicion = encontrarIndicePorNombre(nombreObjetivo);
+    if (posicion == -1) {
+        cout << "Contacto no encontrado.\n";
+        return;
+    }
+
+    // Se confirma la eliminación
+    cout << "¿Está seguro/a de eliminar a "
+         << agenda[posicion].nombre << "? (s/n): ";
+    char confirma; cin >> confirma; cin.ignore();
+
+    if (confirma == 's' || confirma == 'S') {
+        agenda.erase(agenda.begin() + posicion);
+        guardarEnArchivo();
+        cout << "Contacto eliminado.\n";
+    } else {
+        cout << "Operación cancelada.\n";
+    }
+}
+
+//FUNCIÓN: guardarEnArchivo
+
+void guardarEnArchivo() {
+    ofstream archivo(ARCHIVO, ios::trunc);
+
+    for (const Contacto& c : agenda) {
+        archivo << c.nombre << ','
+                << c.numero << ','
+                << c.correo << '\n';
+    }
+
+    archivo.close();
+}
+
+//FUNCIÓN: cargarDesdeArchivo
+
+void cargarDesdeArchivo() {
+    ifstream archivo(ARCHIVO); 
+    if (!archivo) {
+        // Si no existe, se crea un archivo vacío automáticamente
+        ofstream nuevo(ARCHIVO);
+        nuevo.close();
+        cout << "Archivo de contactos creado (estaba ausente).\n";
+        return;
+    }
+
+    string linea;
+    while (getline(archivo, linea)) {
+        size_t p1 = linea.find(',');
+        size_t p2 = linea.rfind(',');
+
+        if (p1 == string::npos || p2 == string::npos || p1 == p2) {
+            cout << "Línea con formato inválido (omitida).\n";
+            continue;               
+        }
+
+        Contacto c;
+        c.nombre = linea.substr(0, p1);
+        c.numero = linea.substr(p1 + 1, p2 - p1 - 1);
+        c.correo = linea.substr(p2 + 1);
+
+        agenda.push_back(c);        
+    }
+
+    archivo.close();
+    cout << "Contactos cargados correctamente desde el archivo.\n";
 }
 
     return 0;
