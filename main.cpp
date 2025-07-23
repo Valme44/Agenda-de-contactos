@@ -32,14 +32,17 @@ void mostrarMenu() {
     do {
         cout << "\nAGENDA DE CONTACTOS\n";
         cout << "1. Agregar contacto\n";
+        cout << "2. Ver contactos\n";
         cout << "0. Salir\n";
         cout << "Seleccione una opción: ";
         cin >> opcion;
         cin.ignore();  // limpia salto de línea
 
         switch (opcion) {
-            case 0: cout << "Saliendo del programa...\n"; break;
             case 1: agregarContacto(); break;
+            case 2: mostrarContactos(); break;
+            case 0: cout << "Saliendo del programa...\n"; break;
+
             default: cout << "Opción no válida. Intente nuevamente.\n";
         }
     } while (opcion != 0);
@@ -73,12 +76,26 @@ void agregarContacto() {
         return;
     }
 
-    // Todo correcto → se agrega
+    // Todo correcto se agrega
     agenda.push_back(nuevo);
     guardarEnArchivo();                 
     cout << "Contacto agregado correctamente.\n";
 }
+//FUNCIÓN: mostrarContactos
 
+void mostrarContactos() {
+    if (agenda.empty()) {
+        cout << "\nNo hay contactos registrados.\n";
+        return;
+    }
+
+    cout << "\nLISTA DE CONTACTOS\n";
+    for (size_t i = 0; i < agenda.size(); ++i) {
+        cout << i + 1 << ") " << agenda[i].nombre
+             << " | "   << agenda[i].numero
+             << " | "   << agenda[i].correo << '\n';
+    }
+}
     return 0;
 }
 
