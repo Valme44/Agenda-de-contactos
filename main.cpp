@@ -33,6 +33,7 @@ void mostrarMenu() {
         cout << "\nAGENDA DE CONTACTOS\n";
         cout << "1. Agregar contacto\n";
         cout << "2. Ver contactos\n";
+        cout << "3. Buscar contacto\n";
         cout << "0. Salir\n";
         cout << "Seleccione una opción: ";
         cin >> opcion;
@@ -41,6 +42,7 @@ void mostrarMenu() {
         switch (opcion) {
             case 1: agregarContacto(); break;
             case 2: mostrarContactos(); break;
+            case 3: buscarContactoPorNombre(); break;
             case 0: cout << "Saliendo del programa...\n"; break;
 
             default: cout << "Opción no válida. Intente nuevamente.\n";
@@ -96,6 +98,53 @@ void mostrarContactos() {
              << " | "   << agenda[i].correo << '\n';
     }
 }
+//FUNCIÓN: aMinusculasManual
+
+char aMinusculaManual(char c) {
+    if (c >= 'A' && c <= 'Z') return c + ('a' - 'A');
+    return c;
+}
+
+//FUNCIÓN: normalizar
+
+string normalizar(const string& textoOriginal) {
+    string resultado = textoOriginal;
+    for (char& c : resultado) c = aMinusculaManual(c);
+    return resultado;
+}
+
+//FUNCIÓN: encontrarIndicePorNombre
+
+int encontrarIndicePorNombre(string nombreBuscado) {
+    string clave = normalizar(nombreBuscado);
+
+    for (size_t i = 0; i < agenda.size(); ++i) {
+        if (normalizar(agenda[i].nombre) == clave)
+            return static_cast<int>(i);   
+    }
+    return -1;   // Cuando no se encuentra el contacto
+}
+
+//FUNCIÓN: buscarContactoPorNombre
+
+void buscarContactoPorNombre() {
+    cout << "\nNombre a buscar: ";
+    string clave;
+    getline(cin, clave);
+
+    int posicion = encontrarIndicePorNombre(clave);
+
+    if (posicion == -1) {
+        cout << "Contacto no encontrado.\n";
+    } else {
+        const Contacto& c = agenda[posicion];
+        cout << "Encontrado:  "
+             << c.nombre  << " | "
+             << c.numero  << " | "
+             << c.correo  << '\n';
+    }
+}
+
     return 0;
 }
 
